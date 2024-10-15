@@ -1,7 +1,6 @@
 import app from "./app.js";
 import { connectToDatabase } from "./config/dbConfig.js";
-
-const port = process.env.PORT || 3000;
+import { port } from "./config/dotenv.config.js";
 
 app.get("/", (_, res) => {
   res.send("Hello World!");

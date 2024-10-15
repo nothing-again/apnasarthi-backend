@@ -6,6 +6,7 @@ export const generateOrderId = async (req, res) => {
     const orderId = await createOrder(amount, currency);
     res.status(200).json({ orderId });
   } catch (error) {
+    console.log({ error });
     res.status(500).json({ error: "Failed to generate order ID" });
   }
 };

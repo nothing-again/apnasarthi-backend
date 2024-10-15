@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/apnasarthi";
+import { MONGODB_URI } from "../config/dotenv.config.js";
 
 let cachedConnection = null;
 
