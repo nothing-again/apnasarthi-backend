@@ -9,7 +9,7 @@ export const getDrivers = async (req, res) => {
     }
 };
 
-export const getDriver = async (req, res) => {
+export const getDriverById = async (req, res) => {
     const { id } = req.params;
     try {
         const driver = await Driver.findById(id);
