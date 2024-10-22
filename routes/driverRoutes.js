@@ -1,10 +1,10 @@
-import exress from "express";
+import express from "express";
 import {
-    getDrivers,
-    getDriverById,
-    createDriver,
-    updateDriver,
-    deleteDriver,
+  getDrivers,
+  getDriverById,
+  createDriver,
+  updateDriver,
+  deleteDriver,
 } from "../controllers/driverController.js";
 
 const router = express.Router();

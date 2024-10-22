@@ -1,27 +1,32 @@
-import MSG91 from "msg91-sms";
 import dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 
 const authKey = process.env.MSG91_AUTH_KEY;
-const senderId = process.env.MSG91_SENDER_ID;
 
-const otpService = {
-    sendOtp: async (mobileNumber, otp) => {
-        const client = new MSG91(authKey, senderId, 4);
-        const message = `Your OTP is ${otp}. It is valid for 5 minutes.`;
-        try {
-            const response = await client.send(mobileNumber, message);
-            console.log(response);
-            return response;
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
+const sendOtp = async (mobileNumber) => {
+  const options = {
+    method: "POST",
+    url: "https://control.msg91.com/api/v5/otp",
+    params: {
+      otp_expiry: "10",
+      template_id: "6717b386d6fc052b50602df2",
+      mobile: mobileNumber,
+      authkey: authKey,
+      realTimeResponse: "1",
     },
+    headers: { "Content-Type": "application/JSON" },
+    data: '{\n  "Param1": "value1",\n  "Param2": "value2",\n  "Param3": "value3"\n}',
+  };
+
+  try {
+    const { data } = await axios.request(options);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-export default otpService;
-
 // Send OTP to the specified number
-otpService.sendOtp("919523566969", "1234");
+sendOtp("+919523566969", "1234");
