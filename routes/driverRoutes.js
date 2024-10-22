@@ -10,6 +10,7 @@ import {
 const router = express.Router();
 
 router.route("/").get(getDrivers).post(createDriver);
+router.route("/login").post(loginDriver);
 router.route("/:id").get(getDriverById).put(updateDriver).delete(deleteDriver);
 
 export default router;
