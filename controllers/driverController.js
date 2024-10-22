@@ -1,5 +1,5 @@
 import Driver from "../models/driverModel.js";
-
+import { sendOTP } from "../services/otpService.js";
 export const getDrivers = async (req, res) => {
     try {
         const drivers = await Driver.find();
@@ -20,10 +20,14 @@ export const getDriverById = async (req, res) => {
 };
 
 export const createDriver = async (req, res) => {
-    const driver = req.body;
+    const [firstName, lastName, email, password, phone] = req.body;
+    const driver = { firstName, lastName, email, password, phone };
+
     const newDriver = new Driver(driver);
     try {
         await newDriver.save();
+        //send otp
+        sendOTP;
         res.status(201).json(newDriver);
     } catch (error) {
         res.status(409).json({ message: error.message });
@@ -49,4 +53,18 @@ export const deleteDriver = async (req, res) => {
         return res.status(404).send(`No driver with id: ${id}`);
     await Driver.findByIdAndRemove(id);
     res.json({ message: "Driver deleted successfully." });
+};
+
+export const loginDriver = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const driver = await Driver.findOne({ email });
+        if (!driver)
+            return res.status(404).json({ message: "Driver not found" });
+        if (driver.password !== password)
+            return res.status(404).json({ message: "Invalid credentials" });
+        res.status(200).json(driver);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };

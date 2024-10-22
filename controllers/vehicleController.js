@@ -25,3 +25,24 @@ export const getVehicleById = async (req, res) => {
 export const createVehicle = async (req, res) => {
     const [driverId, make, type, model] = req.body;
 };
+
+export const updateVehicle = async (req, res) => {
+    const { id } = req.params;
+    const vehicle = req.body;
+    if (!mongoose.Types.ObjectId.isValid(id))
+        return res.status(404).send(`No vehicle with id: ${id}`);
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(
+        id,
+        { ...vehicle, id },
+        { new: true }
+    );
+    res.json(updatedVehicle);
+};
+
+export const deleteVehicle = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id))
+        return res.status(404).send(`No vehicle with id: ${id}`);
+    await Vehicle.findByIdAndRemove(id);
+    res.json({ message: "Vehicle deleted successfully." });
+};
