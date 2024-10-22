@@ -4,6 +4,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import riderRoutes from "./routes/riderRoutes.js";
 import ridesRoutes from "./routes/ridesRoutes.js";
 import driverRoutes from "./routes/driverRoutes.js";
+import vehicleRoutes from "./routes/vehicleRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -15,5 +16,6 @@ app.use("/api/riders", riderRoutes);
 app.use("/api/rides", ridesRoutes);
 app.use("/api/drivers", driverRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/vehicles", vehicleRoutes);
 
 export default app;
