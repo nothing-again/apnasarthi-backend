@@ -24,20 +24,7 @@ cloudinary.config({
 });
 
 app.post("/api/upload", (req, res) => {
-    const storage = multer.diskStorage({
-        destination: function (req, file, cb) {
-            const dir = "./uploads";
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir);
-            }
-            cb(null, dir);
-        },
-        filename: function (req, file, cb) {
-            cb(null, file.originalname);
-        },
-    });
-
-    const upload = multer({ storage: storage }).array("files", 10); // Accepts up to 10 files
+    const upload = multer().array("files", 10); // Accepts up to 10 files
 
     upload(req, res, (err) => {
         if (err) {
@@ -48,7 +35,7 @@ app.post("/api/upload", (req, res) => {
         const files = req.files;
         const promises = files.map((file) => {
             return new Promise((resolve, reject) => {
-                cloudinary.v2.uploader.upload(file.path, (error, result) => {
+                cloudinary.uploader.upload(file.buffer, (error, result) => {
                     if (error) {
                         reject(error);
                     } else {
