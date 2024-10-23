@@ -64,7 +64,8 @@ app.post("/api/upload", (req, res) => {
             })
             .catch((error) => {
                 res.status(400).send({
-                    message: "Error uploading files to Cloudinary",
+                    message:
+                        error.message || "Error uploading files to Cloudinary",
                 });
             });
     });
