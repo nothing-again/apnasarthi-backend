@@ -30,11 +30,16 @@ export const createDriver = async (req, res) => {
         console.log(user);
         //send otp
         const otp = Math.floor(100000 + Math.random() * 900000);
-        newDriver.otp = otp;
-        await newDriver.save();
-        console.log(otp);
-        await sendOTP(phone, otp);
-        res.status(201).json(newDriver);
+        try {
+            const res = await sendOTP(phone, otp);
+            if (res.status == 200) {
+                newDriver.otp = otp;
+                await newDriver.save();
+                res.status(201).json(newDriver);
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
