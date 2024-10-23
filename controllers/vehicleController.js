@@ -1,5 +1,5 @@
 import Vehicle from "../models/vehicleSchema.js";
-
+import mongoose from "mongoose";
 export const getVehicles = async (req, res) => {
     try {
         const vehicles = await Vehicle.find();
@@ -23,7 +23,32 @@ export const getVehicleById = async (req, res) => {
 };
 
 export const createVehicle = async (req, res) => {
-    const [driverId, make, type, model] = req.body;
+    const [
+        driverId,
+        vehicleType,
+        carModel,
+        carYear,
+        registrationNumber,
+        insuranceNumber,
+        insuranceExpiry,
+    ] = req.body;
+
+    const newVehicle = new Vehicle({
+        driver: driverId,
+        vehicleType,
+        carModel,
+        carYear,
+        registrationNumber,
+        insuranceNumber,
+        insuranceExpiry,
+    });
+
+    try {
+        await newVehicle.save();
+        res.status(201).json(newVehicle);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
 export const updateVehicle = async (req, res) => {
