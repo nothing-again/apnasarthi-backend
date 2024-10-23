@@ -1,5 +1,6 @@
 import Driver from "../models/driverModel.js";
 import { sendOTP } from "../services/otpService.js";
+import mongoose from "mongoose";
 export const getDrivers = async (req, res) => {
     try {
         const drivers = await Driver.find();
@@ -20,14 +21,19 @@ export const getDriverById = async (req, res) => {
 };
 
 export const createDriver = async (req, res) => {
-    const [firstName, lastName, email, password, phone] = req.body;
+    const { firstName, lastName, email, password, phone } = req.body;
     const driver = { firstName, lastName, email, password, phone };
 
     const newDriver = new Driver(driver);
     try {
-        await newDriver.save();
+        const user = await newDriver.save();
+        console.log(user);
         //send otp
-        sendOTP;
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        newDriver.otp = otp;
+        await newDriver.save();
+        console.log(otp);
+        await sendOTP(phone, otp);
         res.status(201).json(newDriver);
     } catch (error) {
         res.status(409).json({ message: error.message });
@@ -65,6 +71,24 @@ export const loginDriver = async (req, res) => {
             return res.status(404).json({ message: "Invalid credentials" });
         res.status(200).json(driver);
     } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const verifyOtp = async (req, res) => {
+    const { id, otp } = req.body;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).send(`No driver with id: ${id}`);
+        const driver = await Driver.findById(id);
+        if (driver.otp === otp) {
+            driver.isVerified = true;
+            await driver.save();
+            res.status(200).json("message: OTP verified successfully");
+        }
+    } catch (error) {
+        console.log(error.message);
         res.status(500).json({ message: error.message });
     }
 };
