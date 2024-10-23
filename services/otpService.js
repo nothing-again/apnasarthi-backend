@@ -22,11 +22,9 @@ const sendOTP = async (toNumber, otp) => {
         );
 
         console.log("OTP sent successfully:", response.data);
+        return response;
     } catch (error) {
-        console.error(
-            "Error sending OTP:",
-            error.response ? error.response.data : error.message
-        );
+        return error;
     }
 };
 
