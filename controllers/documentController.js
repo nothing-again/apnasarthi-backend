@@ -23,7 +23,7 @@ export const getDocumentById = async (req, res) => {
 };
 
 export const createDocument = async (req, res) => {
-    const [driverId, name, type, url] = req.body;
+    const { driverId, name, type, url } = req.body;
 
     if (!driverId || !name || !type || !url) {
         return res
