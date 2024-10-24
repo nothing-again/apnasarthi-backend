@@ -5,14 +5,17 @@ import riderRoutes from "./routes/riderRoutes.js";
 import ridesRoutes from "./routes/ridesRoutes.js";
 import driverRoutes from "./routes/driverRoutes.js";
 import vehicleRoutes from "./routes/vehicleRoutes.js";
+import documentRotes from "./routes/documentRoutes.js";
 import multer from "multer";
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -52,5 +55,6 @@ app.use("/api/rides", ridesRoutes);
 app.use("/api/drivers", driverRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/documents", documentRotes);
 
 export default app;

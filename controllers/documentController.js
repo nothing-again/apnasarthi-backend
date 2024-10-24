@@ -1,6 +1,5 @@
 import Document from "../models/documentSchema.js";
 import mongoose from "mongoose";
-import { uploadFile } from "../services/fileUpload.js";
 export const getDocuments = async (req, res) => {
     try {
         const documents = await Document.find();
