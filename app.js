@@ -23,39 +23,24 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-app.post("/api/upload", (req, res) => {
-    const upload = multer().array("files", 10); // Accepts up to 10 files
-
-    upload(req, res, (err) => {
-        if (err) {
-            return res.status(400).send({ message: "Error uploading file" });
+const upload = multer({ dest: "uploads/" });
+app.post("/api/upload", upload.single("file"), async (req, res) => {
+    console.log(req.file);
+    try {
+        // Check if a file was included in the request
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded." });
         }
 
-        // Upload files to Cloudinary
-        const files = req.files;
-        const promises = files.map((file) => {
-            return new Promise((resolve, reject) => {
-                cloudinary.uploader.upload(file.buffer, (error, result) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(result.secure_url);
-                    }
-                });
-            });
-        });
+        // Upload the file to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path);
 
-        Promise.all(promises)
-            .then((urls) => {
-                res.send(urls);
-            })
-            .catch((error) => {
-                res.status(400).send({
-                    message:
-                        error.message || "Error uploading files to Cloudinary",
-                });
-            });
-    });
+        // Return the secure URL
+        res.json({ url: result.secure_url });
+    } catch (err) {
+        // If there's an error, return it
+        res.status(500).json({ error: err.message });
+    }
 });
 
 app.use("/api/riders", riderRoutes);

@@ -35,8 +35,13 @@ const driverSchema = new mongoose.Schema(
             default: false,
         },
         location: {
-            type: { type: String },
-            coordinates: [],
+            type: {
+                type: String,
+                enum: ["Point"],
+            },
+            coordinates: {
+                type: [Number],
+            },
         },
         address: {
             type: String,
