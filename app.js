@@ -24,6 +24,7 @@ cloudinary.config({
 });
 
 const upload = multer({ dest: "uploads/" });
+
 app.post("/api/upload", upload.single("file"), async (req, res) => {
     console.log(req.file);
     try {
