@@ -41,6 +41,9 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
     } catch (err) {
         // If there's an error, return it
         res.status(500).json({ error: err.message });
+    } finally {
+        // Delete the file from the server
+        fs.unlinkSync(req.file.path);
     }
 });
 
