@@ -1,22 +1,14 @@
 import express from "express";
 import {
-    getRiders,
-    getRiderById,
-    createRider,
-    updateRider,
-    deleteRider,
-} from "../controllers/riderController.js";
+    createTrip,
+    getTripById,
+    getTrips,
+} from "../controllers/rideController.js";
 
 const router = express.Router();
 
-router.get("/", getRiders);
-
-router.get("/:id", getRiderById);
-
-router.post("/", createRider);
-
-router.put("/:id", updateRider);
-
-router.delete("/:id", deleteRider);
+router.get("/", getTrips);
+router.post("/", createTrip);
+router.get("/:id", getTripById);
 
 export default router;
