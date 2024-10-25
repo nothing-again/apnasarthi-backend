@@ -70,22 +70,26 @@ export const deleteDriver = async (req, res) => {
 
 export const loginDriver = async (req, res) => {
     const { phone } = req.body;
+    log("phone", phone);
     try {
         const driver = await Driver.findOne({ phone });
         if (!driver) {
             return res.status(404).json({ message: "Driver not found" });
         }
-
+        console.log("driver", driver);
         const otp = Math.floor(100000 + Math.random() * 900000);
         const otpResponse = await sendOTP(phone, otp);
         if (otpResponse.status === 200) {
             driver.otp = otp;
             await driver.save();
+            console.log("driver", driver);
             return res.status(200).json(driver);
         } else {
+            console.log("otpResponse", otpResponse);
             return res.status(500).json({ error: otpResponse });
         }
     } catch (error) {
+        console.log("error", error);
         return res.status(500).json({ message: error.message });
     }
 };
