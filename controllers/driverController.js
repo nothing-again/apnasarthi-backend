@@ -106,7 +106,7 @@ export const verifyOtp = async (req, res) => {
         //     await driver.save();
         //     res.status(200).json("message: OTP verified successfully");
         // }
-        res.send("OTP verified successfully");
+        res.status(200).json("message: OTP verified successfully");
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ message: error.message });
