@@ -67,6 +67,18 @@ export const createTrip = async (req, res) => {
   }
 };
 
+export const createInterCityTrip = async (req, res) => {
+  res.json({ message: "InterCity Trip Created" });
+};
+
+export const createPackageTrip = async (req, res) => {
+  res.json({ message: "Package Trip Created" });
+};
+
+export const createRentalTrip = async (req, res) => {
+  res.json({ message: "Rental Trip Created" });
+};
+
 export const getEstimatedFare = async (req, res) => {
   const { origin, destination } = req.body;
   const distance = getDistance(origin, destination);
