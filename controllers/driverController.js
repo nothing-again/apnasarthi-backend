@@ -87,7 +87,7 @@ export const loginDriver = async (req, res) => {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-        res.status(200).json({ driver });
+        res.status(200).json(driver);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
