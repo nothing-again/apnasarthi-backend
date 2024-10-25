@@ -20,7 +20,7 @@ export const getRiderById = async (req, res) => {
 };
 
 export const createRider = async (req, res) => {
-    const {firstName, lastName, email, password, phone} = req.body;
+    const { firstName, lastName, email, password, phone } = req.body;
 
     if (!firstName || !lastName || !email || !password || !phone) {
         return res.status(400).json({ message: "All fields are required" });
@@ -42,7 +42,7 @@ export const createRider = async (req, res) => {
         // } catch (error) {
         //     res.status(500).json({ error: error });
         // }
-        res.status(201).json({ newRider });
+        res.status(201).json({ user });
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
