@@ -100,11 +100,12 @@ export const verifyOtp = async (req, res) => {
     const { id, otp } = req.body;
     try {
         const rider = await Rider.findOne({ id });
-        if (rider.otp == otp) {
-            res.status(200).json({ rider });
-        } else {
-            res.status(404).json({ message: "Invalid OTP" });
-        }
+        // if (rider.otp == otp) {
+        //     res.status(200).json({ rider });
+        // } else {
+        //     res.status(404).json({ message: "Invalid OTP" });
+        // }
+        res.status(200).json(rider);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
