@@ -70,7 +70,7 @@ export const deleteDriver = async (req, res) => {
 
 export const loginDriver = async (req, res) => {
     const { phone } = req.body;
-    log("phone", phone);
+    console.log("phone", phone);
     try {
         const driver = await Driver.findOne({ phone });
         if (!driver) {
