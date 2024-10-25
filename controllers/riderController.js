@@ -29,7 +29,19 @@ export const createRider = async (req, res) => {
     const newRider = new Rider({ firstName, lastName, email, password, phone });
 
     try {
-        await newRider.save();
+        const user = await newRider.save();
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        try {
+            const otpResponse = await sendOTP(phone, otp);
+            if (otpResponse.status == 200) {
+                newRider.otp = otp;
+                await newRider.save();
+            } else {
+                res.status(500).json({ error: otpResponse });
+            }
+        } catch (error) {
+            res.status(500).json({ error: error });
+        }
         res.status(201).json({ newRider });
     } catch (error) {
         res.status(409).json({ message: error.message });
@@ -56,5 +68,44 @@ export const deleteRider = async (req, res) => {
         res.status(200).json({ message: "Rider deleted successfully" });
     } catch (error) {
         res.status(409).json({ message: error.message });
+    }
+};
+
+export const login = async (req, res) => {
+    const { phone } = req.body;
+    try {
+        const rider = await Rider.findOne({ phone });
+        if (!rider) {
+            return res.status(404).json({ message: "Rider not found" });
+        }
+        try {
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            const otpResponse = await sendOTP(phone, otp);
+            if (otpResponse.status == 200) {
+                rider.otp = otp;
+                await rider.save();
+            } else {
+                res.status(500).json({ error: otpResponse });
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+        res.status(200).json({ rider });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const verifyOtp = async (req, res) => {
+    const { id, otp } = req.body;
+    try {
+        const rider = await Rider.findOne({ id });
+        if (rider.otp == otp) {
+            res.status(200).json({ rider });
+        } else {
+            res.status(404).json({ message: "Invalid OTP" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };

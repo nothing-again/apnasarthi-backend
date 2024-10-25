@@ -86,9 +86,8 @@ export const verifyOtp = async (req, res) => {
     const { id, otp } = req.body;
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id))
-            return res.status(404).send(`No driver with id: ${id}`);
         const driver = await Driver.findById(id);
+        if (!driver) return res.status(404).send(`No driver with id: ${id}`);
         if (driver.otp === otp) {
             driver.isVerified = true;
             await driver.save();
