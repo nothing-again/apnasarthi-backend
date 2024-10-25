@@ -1,6 +1,7 @@
 import Trip from "../models/tripSchema.js";
 import mongoose, { get } from "mongoose";
 import { getDistance } from "../utils/getDistance.js";
+import Vehicle from "../models/vehicleSchema.js";
 export const getTrips = async (req, res) => {
   try {
     const trips = await Trip.find();
@@ -69,11 +70,10 @@ export const createTrip = async (req, res) => {
 export const getEstimatedFare = async (req, res) => {
   const { origin, destination } = req.body;
   const distance = getDistance(origin, destination);
-  const avialableVehicle = getAvialableVehicle(origin);
-
+  const availableVehicle = await getAvailableVehicle(origin);
   let fareObj = {};
 
-  for (vehicle of avialableVehicle) {
+  for (const vehicle of availableVehicle) {
     if (vehicle.type == "auto") {
       const time = new Date().getHours();
       // check if time is between 5 am and 9:30 pm then fare is 17.5/km
@@ -97,7 +97,7 @@ export const getEstimatedFare = async (req, res) => {
   res.json(fareObj);
 };
 
-export const getAvialableVehicle = async (origin) => {
+export const getAvailableVehicle = async (origin) => {
   const vehicles = await Vehicle.find();
   const availableVehicles = vehicles.filter((vehicle) => {
     const distance = getDistance(vehicle.location, origin);
