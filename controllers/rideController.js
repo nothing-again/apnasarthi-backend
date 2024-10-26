@@ -43,9 +43,9 @@ export const getTripByDriverId = async (req, res) => {
 };
 
 export const createTrip = async (req, res) => {
-    const { riderId, driverId, origin, destination, fare } = req.body;
+    const { riderId, origin, destination, fare, paymentStatus } = req.body;
 
-    if (!riderId || !driverId || !origin || !destination || !fare) {
+    if (!riderId || !origin || !destination || !fare || !paymentStatus) {
         return res
             .status(400)
             .json({ message: "Please provide all required fields" });
@@ -53,10 +53,10 @@ export const createTrip = async (req, res) => {
 
     const newTrip = new Trip({
         rider: riderId,
-        driver: driverId,
         origin,
         destination,
         fare,
+        paymentStatus,
     });
 
     try {
