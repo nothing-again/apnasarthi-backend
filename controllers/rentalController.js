@@ -23,7 +23,7 @@ export const getRentalById = async (req, res) => {
 };
 
 export const createRental = async (req, res) => {
-    const { pickupPoint, startDate, endDate, vehicleType } = req.body;
+    const { id, pickupPoint, startDate, endDate, vehicleType } = req.body;
 
     if (!pickupPoint || !startDate || !endDate || !vehicleType) {
         return res
@@ -32,6 +32,7 @@ export const createRental = async (req, res) => {
     }
 
     const newRental = new Rental({
+        rider: id,
         pickupPoint,
         startDate,
         endDate,
