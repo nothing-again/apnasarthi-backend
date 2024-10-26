@@ -43,6 +43,12 @@ const driverSchema = new mongoose.Schema(
                 type: [Number],
             },
         },
+        farePerKm: {
+            type: Number,
+        },
+        farePerDay: {
+            type: Number,
+        },
         address: {
             type: String,
         },

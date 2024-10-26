@@ -142,3 +142,34 @@ export const updateAvailability = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 };
+
+export const updateFarePerKm = async (req, res) => {
+    const { id } = req.params;
+    const { farePerKm } = req.body;
+    try {
+        const driver = await Driver.findByIdAndUpdate(
+            id,
+            { farePerKm },
+            { new: true }
+        );
+
+        res.status(200).json(driver);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};
+
+export const updateFarePerDay = async (req, res) => {
+    const { id } = req.params;
+    const { farePerDay } = req.body;
+    try {
+        const driver = await Driver.findByIdAndUpdate(
+            id,
+            { farePerDay },
+            { new: true }
+        );
+        res.status(200).json(driver);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};
