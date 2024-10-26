@@ -1,14 +1,14 @@
 import express from "express";
 import {
-  createTrip,
-  getTripById,
-  getTrips,
-  getTripByDriverId,
-  getTripByRiderId,
-  getEstimatedFare,
-  createInterCityTrip,
-  createPackageTrip,
-  createRentalTrip,
+    createTrip,
+    getTripById,
+    getTrips,
+    getTripByDriverId,
+    getTripByRiderId,
+    getEstimatedFare,
+    createInterCityTrip,
+    createPackageTrip,
+    createRentalTrip,
 } from "../controllers/rideController.js";
 
 const router = express.Router();
