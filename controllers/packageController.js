@@ -3,7 +3,8 @@ import Package from "../models/packageModel.js";
 export const createPackageTrip = async (req, res) => {
     // const { origin, destination, weight } = req.body;
     // pickup point, drop point, weight, vehicle type, date, time
-    const { origin, destination, weight, vehicleType, date, time } = req.body;
+    const { id, origin, destination, weight, vehicleType, date, time } =
+        req.body;
 
     if (!origin || !destination || !weight || !vehicleType || !date || !time) {
         res.status(400).json({ message: "Please provide all required fields" });
@@ -20,6 +21,7 @@ export const createPackageTrip = async (req, res) => {
     const fare = calculateFare(weight, distance, vehicleType);
 
     const newPackage = new Package({
+        rider: id,
         origin,
         destination,
         weight,
