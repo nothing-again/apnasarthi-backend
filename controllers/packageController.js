@@ -61,7 +61,8 @@ export const getPackageTrips = async (req, res) => {
 
 export const getPackageTripById = async (req, res) => {
     try {
-        const pack = await Package.findById(req.params.id);
+        // rider == id
+        const pack = await Package.find({ rider: req.params.id });
         res.json(pack);
     } catch (error) {
         res.status(500).json({ message: error.message });
