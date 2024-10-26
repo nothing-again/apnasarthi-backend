@@ -26,10 +26,15 @@ export const createRider = async (req, res) => {
         return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newRider = new Rider({ firstName, lastName, email, password, phone });
-
     try {
-        const user = await newRider.save();
+        const newRider = new Rider({
+            firstName,
+            lastName,
+            email,
+            password,
+            phone,
+        });
+        newRider.save();
         // const otp = Math.floor(100000 + Math.random() * 900000);
         // try {
         //     const otpResponse = await sendOTP(phone, otp);
@@ -42,7 +47,7 @@ export const createRider = async (req, res) => {
         // } catch (error) {
         //     res.status(500).json({ error: error });
         // }
-        res.status(201).json({ user });
+        res.status(201).json(newRider);
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
@@ -90,7 +95,7 @@ export const login = async (req, res) => {
         // } catch (error) {
         //     res.status(500).json({ message: error.message });
         // }
-        res.status(200).json({ rider });
+        res.status(200).json(rider);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -99,7 +104,7 @@ export const login = async (req, res) => {
 export const verifyOtp = async (req, res) => {
     const { id, otp } = req.body;
     try {
-        const rider = await Rider.findOne({ id });
+        const rider = await Rider.findById(id);
         // if (rider.otp == otp) {
         //     res.status(200).json({ rider });
         // } else {
