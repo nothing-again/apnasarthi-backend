@@ -51,6 +51,12 @@ export const createTrip = async (req, res) => {
             .json({ message: "Please provide all required fields" });
     }
 
+    console.log("riderId", riderId);
+    console.log("origin", origin);
+    console.log("destination", destination);
+    console.log("fare", fare);
+    console.log("paymentStatus", paymentStatus);
+
     const newTrip = new Trip({
         rider: riderId,
         origin,
