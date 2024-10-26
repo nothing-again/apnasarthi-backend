@@ -7,6 +7,7 @@ import driverRoutes from "./routes/driverRoutes.js";
 import vehicleRoutes from "./routes/vehicleRoutes.js";
 import documentRotes from "./routes/documentRoutes.js";
 import packageRoutes from "./routes/packageRoutes.js";
+import rentalRoutes from "./routes/rentalRoutes.js";
 import multer from "multer";
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
@@ -58,5 +59,6 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/documents", documentRotes);
 app.use("/api/packages", packageRoutes);
+app.use("/api/rentals", rentalRoutes);
 
 export default app;

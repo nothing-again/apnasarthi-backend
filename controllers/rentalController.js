@@ -46,6 +46,10 @@ export const createRental = async (req, res) => {
     }
 };
 
+/*
+new ren
+*/
+
 export const updateRental = async (req, res) => {
     const { id } = req.params;
     const rental = req.body;
