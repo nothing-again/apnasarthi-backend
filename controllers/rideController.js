@@ -81,27 +81,33 @@ export const getEstimatedFare = async (req, res) => {
     const availableVehicle = await getAvailableVehicle(origin);
     let fareObj = {};
 
-    for (const vehicle of availableVehicle) {
-        if (vehicle.type == "auto") {
-            const time = new Date().getHours();
-            // check if time is between 5 am and 9:30 pm then fare is 17.5/km
-            //if time is between 9:31 pm and 11 pm or 3:45 am and 4:59 am then fare is 26/km
-            //else fare is 22/km
-            let fare = 0;
-            if (time >= 5 && time <= 21.5) {
-                fare = 17.5 * distance;
-            } else if (
-                (time >= 21.5 && time <= 23) ||
-                (time >= 3.75 && time <= 4.98)
-            ) {
-                fare = 26 * distance;
-            } else {
-                fare = 33 * distance;
-            }
+    // for (const vehicle of availableVehicle) {
+    //     if (vehicle.type == "auto") {
+    //         const time = new Date().getHours();
+    //         // check if time is between 5 am and 9:30 pm then fare is 17.5/km
+    //         //if time is between 9:31 pm and 11 pm or 3:45 am and 4:59 am then fare is 26/km
+    //         //else fare is 22/km
+    //         let fare = 0;
+    //         if (time >= 5 && time <= 21.5) {
+    //             fare = 17.5 * distance;
+    //         } else if (
+    //             (time >= 21.5 && time <= 23) ||
+    //             (time >= 3.75 && time <= 4.98)
+    //         ) {
+    //             fare = 26 * distance;
+    //         } else {
+    //             fare = 33 * distance;
+    //         }
 
-            fareObj[vehicle.type] = fare;
-        }
-    }
+    //         fareObj[vehicle.type] = fare;
+    //     }
+    // }
+    //Mock response
+    fareObj = {
+        auto: 100,
+        bike: 50,
+        miniTruck: 150,
+    };
     res.json(fareObj);
 };
 
