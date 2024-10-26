@@ -42,11 +42,11 @@ export const createPackageTrip = async (req, res) => {
 const calculateFare = (weight, distance, vehicleType) => {
     let fare = 0;
     let baseFare = 100;
-    if (vehicleType === "bike") {
+    if (vehicleType === "Bike") {
         fare = baseFare + distance * 0.5;
-    } else if (vehicleType === "car") {
+    } else if (vehicleType === "Auto") {
         fare = baseFare + distance * 0.75;
-    } else if (vehicleType === "truck") {
+    } else if (vehicleType === "Mini Truck") {
         fare = baseFare + distance * 1;
     }
     return fare;
