@@ -79,7 +79,7 @@ export const getEstimatedFare = async (req, res) => {
     const { origin, destination } = req.body;
     // const distance = getDistance(origin, destination);
     // const availableVehicle = await getAvailableVehicle(origin);
-    let fareObj = {};
+    // let fareObj = {};
 
     // for (const vehicle of availableVehicle) {
     //     if (vehicle.type == "auto") {
@@ -103,11 +103,20 @@ export const getEstimatedFare = async (req, res) => {
     //     }
     // }
     //Mock response
-    fareObj = {
-        auto: 100,
-        bike: 50,
-        miniTruck: 150,
-    };
+    let fareObj = [
+        {
+            vehicleType: "auto",
+            fare: 1,
+        },
+        {
+            vehicleType: "bike",
+            fare: 5,
+        },
+        {
+            vehicleType: "mini-truck",
+            fare: 15,
+        },
+    ];
     res.json(fareObj);
 };
 
