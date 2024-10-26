@@ -59,6 +59,15 @@ export const getPackageTrips = async (req, res) => {
     }
 };
 
+export const getPendingPackageTrips = async (req, res) => {
+    try {
+        const packages = await Package.find({ status: "pending" });
+        res.json(packages);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const getPackageTripById = async (req, res) => {
     try {
         // rider == id

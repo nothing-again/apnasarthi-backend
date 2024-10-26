@@ -5,11 +5,13 @@ import {
     getPackageTripById,
     updatePackageTrip,
     deletePackageTrip,
+    getPendingPackageTrips,
 } from "../controllers/packageController.js";
 
 const router = express.Router();
 
 router.get("/", getPackageTrips);
+router.get("/pending", getPendingPackageTrips);
 router.post("/", createPackageTrip);
 router.get("/:id", getPackageTripById);
 router.put("/:id", updatePackageTrip);
