@@ -77,8 +77,8 @@ export const createRentalTrip = async (req, res) => {
 
 export const getEstimatedFare = async (req, res) => {
     const { origin, destination } = req.body;
-    const distance = getDistance(origin, destination);
-    const availableVehicle = await getAvailableVehicle(origin);
+    // const distance = getDistance(origin, destination);
+    // const availableVehicle = await getAvailableVehicle(origin);
     let fareObj = {};
 
     // for (const vehicle of availableVehicle) {
