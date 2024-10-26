@@ -10,13 +10,15 @@ export const createPackageTrip = async (req, res) => {
         res.status(400).json({ message: "Please provide all required fields" });
     }
 
-    const distance = fetch(
+    let distance = fetch(
         `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${process.env.GOOGLE_MAPS_API_KEY}`
     )
         .then((res) => res.json())
         .then((data) => {
             return data.rows[0].elements[0].distance.value;
         });
+
+    distance = Number(distance) / 1000;
 
     const fare = calculateFare(weight, distance, vehicleType);
 
