@@ -5,12 +5,11 @@ export const createPackageTrip = async (req, res) => {
     // pickup point, drop point, weight, vehicle type, date, time
     const { id, origin, destination, weight, vehicleType, date, time } =
         req.body;
-
     if (!origin || !destination || !weight || !vehicleType || !date || !time) {
         res.status(400).json({ message: "Please provide all required fields" });
     }
 
-    let distance = fetch(
+    let distance = await fetch(
         `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${process.env.GOOGLE_MAPS_API_KEY}`
     )
         .then((res) => res.json())
@@ -18,8 +17,7 @@ export const createPackageTrip = async (req, res) => {
             return data.rows[0].elements[0].distance.value;
         });
 
-    distance = Number(distance) / 1000;
-
+    distance = distance / 1000; // convert to km
     const fare = calculateFare(weight, distance, vehicleType);
 
     const newPackage = new Package({
