@@ -15,7 +15,28 @@ export const getRentalById = async (req, res) => {
     try {
         const rental = await Rental.findById(req.params.id);
         if (rental) {
-            res.json(rental);
+            const driver = await Driver.findById(rental.driver);
+            const vehicle = await Vehicle.findById(rental.vehicle);
+            const rider = await Rider.findById(rental.rider);
+            const resObj = {
+                rentalId: rental?._id,
+                origin: rental?.pickupPoint,
+                destination: rental?.rider?.address,
+                startDate: rental?.startDate,
+                endDate: rental?.endDate,
+                vehicleType: rental?.vehicleType,
+                fare: rental?.fare,
+                driver: driver?.firstName + " " + driver?.lastName,
+                driverPhone: driver?.phone,
+                driverEmail: driver?.email,
+                vehicleModel: vehicle?.carModel,
+                vehicleYear: vehicle?.carYear,
+                vehicleRegistrationNumber: vehicle?.registrationNumber,
+                rider: rider?.firstName + " " + rider?.lastName,
+                riderPhone: rider?.phone,
+                riderEmail: rider?.email,
+            };
+            res.json(resObj);
         } else {
             res.status(404).json({ message: "Rental not found" });
         }
