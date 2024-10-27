@@ -70,7 +70,7 @@ export const confirmRental = async (req, res) => {
             return res.status(404).json({ message: "Rider not found" });
         }
 
-        vehicle.status = "unavailable";
+        // vehicle.status = "unavailable";
         rental.driver = driverId;
         rental.fare = fare;
         await rental.save();
