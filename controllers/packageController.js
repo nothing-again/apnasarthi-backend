@@ -134,3 +134,21 @@ export const deletePackageTrip = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const getPackageTripByDriverId = async (req, res) => {
+    try {
+        const pack = await Package.find({ driver: req.params.id });
+        res.json(pack);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const getPackageTripByRiderId = async (req, res) => {
+    try {
+        const pack = await Package.find({ rider: req.params.id });
+        res.json(pack);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

@@ -7,6 +7,8 @@ import {
     deletePackageTrip,
     getPendingPackageTrips,
     confirmPackageTrip,
+    getPackageTripByDriverId,
+    getPackageTripByRiderId,
 } from "../controllers/packageController.js";
 
 const router = express.Router();
@@ -14,6 +16,8 @@ const router = express.Router();
 router.get("/", getPackageTrips);
 router.get("/pending", getPendingPackageTrips);
 router.post("/confirm", confirmPackageTrip);
+router.get("/driver/:id", getPackageTripByDriverId);
+router.get("/rider/:id", getPackageTripByRiderId);
 router.post("/", createPackageTrip);
 router.get("/:id", getPackageTripById);
 router.put("/:id", updatePackageTrip);
