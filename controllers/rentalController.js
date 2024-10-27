@@ -151,7 +151,31 @@ export const getRentalByRider = async (req, res) => {
 export const getRentalByDriver = async (req, res) => {
     try {
         const rentals = await Rental.find({ driver: req.params.id });
-        res.json(rentals);
+
+        const driver = await Driver.findById(req.params.id);
+
+        const resObj = rentals.map((rental) => {
+            return {
+                rentalId: rental?._id,
+                origin: rental?.pickupPoint,
+                destination: rental?.rider?.address,
+                startDate: rental?.startDate,
+                endDate: rental?.endDate,
+                vehicleType: rental?.vehicleType,
+                fare: rental?.fare,
+                driver: driver?.firstName + " " + driver?.lastName,
+                driverPhone: driver?.phone,
+                driverEmail: driver?.email,
+                vehicleModel: rental?.vehicle?.carModel,
+                vehicleYear: rental?.vehicle?.carYear,
+                vehicleRegistrationNumber: rental?.vehicle?.registrationNumber,
+                rider: rental?.rider?.firstName + " " + rental?.rider?.lastName,
+                riderPhone: rental?.rider?.phone,
+                riderEmail: rental?.rider?.email,
+            };
+        });
+
+        res.json(resObj);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
