@@ -1,5 +1,5 @@
 import Rider from "../models/riderModel.js";
-
+import { sendOTP } from "../services/otpService.js";
 export const getRiders = async (req, res) => {
     try {
         const riders = await Rider.find();
@@ -18,10 +18,12 @@ export const getRiderById = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 };
-
 export const createRider = async (req, res) => {
     const { firstName, lastName, email, password, phone } = req.body;
-
+    console.log("firstName", firstName);
+    console.log("lastName", lastName);
+    console.log("email", email);
+    console.log("password", password);
     if (!firstName || !lastName || !email || !password || !phone) {
         return res.status(400).json({ message: "All fields are required" });
     }
@@ -34,22 +36,23 @@ export const createRider = async (req, res) => {
             password,
             phone,
         });
-        newRider.save();
+        await newRider.save(); // Await the save operation
+
         const otp = Math.floor(100000 + Math.random() * 900000);
-        try {
-            const otpResponse = await sendOTP(phone, otp);
-            if (otpResponse.status == 200) {
-                newRider.otp = otp;
-                await newRider.save();
-            } else {
-                res.status(500).json({ error: otpResponse });
-            }
-        } catch (error) {
-            res.status(500).json({ error: error });
+        const otpResponse = await sendOTP(phone, otp);
+
+        if (otpResponse.status === 200) {
+            newRider.otp = otp;
+            await newRider.save();
+            return res.status(201).json(newRider);
+        } else {
+            return res.status(500).json({ error: otpResponse });
         }
-        res.status(201).json(newRider);
     } catch (error) {
-        res.status(409).json({ message: error.message });
+        if (error.name === "ValidationError") {
+            return res.status(400).json({ message: error.message });
+        }
+        return res.status(409).json({ message: error.message });
     }
 };
 
