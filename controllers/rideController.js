@@ -108,9 +108,9 @@ export const getEstimatedFare = async (req, res) => {
     );
 
     const data = await response.json();
-    const distance = data.rows[0].elements[0].distance.value / 1000;
+    // const distance = data.rows[0].elements[0].distance.value / 1000;
 
-    const availableVehicle = await getAvailableVehicle(origin);
+    // const availableVehicle = await getAvailableVehicle(origin);
     // let fareObj = {};
 
     // for (const vehicle of availableVehicle) {
