@@ -24,6 +24,14 @@ const rentalSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Rider",
     },
+    driver: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Driver",
+    },
+    vehicle: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Vehicle",
+    },
 });
 
 const Rental = mongoose.model("Rental", rentalSchema);

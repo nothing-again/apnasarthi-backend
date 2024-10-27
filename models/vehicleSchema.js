@@ -30,6 +30,10 @@ const vehicleSchema = new mongoose.Schema({
     insuranceExpiry: {
         type: Date,
     },
+    status: {
+        type: String,
+        default: "available",
+    },
 });
 
 const Vehicle = mongoose.model("Vehicle", vehicleSchema);
