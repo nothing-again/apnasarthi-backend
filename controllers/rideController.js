@@ -178,16 +178,16 @@ export const pendingTrips = async (_, res) => {
 
 export const confirmTrip = async (req, res) => {
     const { driverId, tripId } = req.body;
+    console.log("driverId", driverId);
+    console.log("tripId", tripId);
     try {
-        const driver = await Driver.findById({
-            _id: mongoose.Types.ObjectId(driverId),
-        });
+        const driver = await Driver.findById({ _id: driverId });
 
         if (!driver) {
             return res.status(400).json({ message: "Driver is not available" });
         }
 
-        const trip = await Trip.findById(tripId);
+        const trip = await Trip.findById({ _id: tripId });
 
         if (!trip) {
             return res.status(400).json({ message: "Trip not found" });
@@ -210,8 +210,8 @@ export const confirmTrip = async (req, res) => {
             destination: trip.destination,
             fare: trip.fare,
             status: trip.status,
-            vehicleNumber: vehicle.vehicleNumber,
-            vehicleType: vehicle.vehicleType,
+            vehicleNumber: vehicle?.vehicleNumber,
+            vehicleType: vehicle?.vehicleType,
             firstName: driver.firstName,
             lastName: driver.lastName,
             phone: driver.phone,
