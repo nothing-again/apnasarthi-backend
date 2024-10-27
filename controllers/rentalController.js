@@ -169,9 +169,6 @@ export const getRentalByDriver = async (req, res) => {
                 vehicleModel: rental?.vehicle?.carModel,
                 vehicleYear: rental?.vehicle?.carYear,
                 vehicleRegistrationNumber: rental?.vehicle?.registrationNumber,
-                rider: rental?.rider?.firstName + " " + rental?.rider?.lastName,
-                riderPhone: rental?.rider?.phone,
-                riderEmail: rental?.rider?.email,
             };
         });
 
