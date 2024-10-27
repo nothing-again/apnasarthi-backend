@@ -166,10 +166,11 @@ export const getAvailableVehicle = async (origin) => {
     return availableVehicles;
 };
 
-export const pendingTrips = async (req, res) => {
+export const pendingTrips = async (_, res) => {
     try {
-        const trips = await Trip.find({ status: "pending" });
-        res.json(trips);
+        const trips = await Trip.find();
+        const pendingTrips = trips.filter((trip) => trip.status === "pending");
+        res.json(pendingTrips);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -15,6 +15,7 @@ import {
 const router = express.Router();
 
 router.get("/", getTrips);
+router.get("/pending", pendingTrips);
 router.post("/", createTrip);
 router.post("/estimate", getEstimatedFare);
 
@@ -23,7 +24,6 @@ router.post("/intercity", createInterCityTrip);
 router.get("/:id", getTripById);
 router.get("/rider/:riderId", getTripByRiderId);
 router.get("/driver/:driverId", getTripByDriverId);
-router.get("/pending", pendingTrips);
 router.post("/confirm", confirmTrip);
 router.post("/cancel", cancelTrip);
 
