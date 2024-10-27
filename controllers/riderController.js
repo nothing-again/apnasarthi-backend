@@ -42,8 +42,11 @@ export const createRider = async (req, res) => {
         const otpResponse = await sendOTP(phone, otp);
 
         if (otpResponse.status === 200) {
+            console.log("OTP sent successfully:", otpResponse.data);
             newRider.otp = otp;
+            console.log("newRider.otp", newRider.otp);
             await newRider.save();
+            console.log("newRider", newRider);
             return res.status(201).json(newRider);
         } else {
             return res.status(500).json({ error: otpResponse });
