@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.get("/", getRentals);
 router.post("/", createRental);
-router.get("/pending", getPendingRentals);
+router.post("/pending", getPendingRentals);
 router.get("/:id", getRentalById);
 router.put("/:id", updateRental);
 router.delete("/:id", deleteRental);
