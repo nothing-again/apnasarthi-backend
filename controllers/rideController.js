@@ -15,31 +15,31 @@ export const getTrips = async (req, res) => {
 export const getTripById = async (req, res) => {
     try {
         const trip = await Trip.findById(req.params.id);
-        if (trip) {
-            if (trip.status === "accepted") {
-                const driver = await Driver.findById(trip.driver);
-                const vehicle = await Vehicle.findById(driver.vehicle);
-                let resObj = {
-                    tripId: trip._id,
-                    origin: trip.origin,
-                    destination: trip.destination,
-                    fare: trip.fare,
-                    status: trip.status,
-                    vehicleNumber: vehicle.vehicleNumber,
-                    vehicleType: vehicle.vehicleType,
-                    firstName: driver.firstName,
-                    lastName: driver.lastName,
-                    phone: driver.phone,
-                };
-                return res.json(resObj);
-                }
-            }
-            res.json(trip);
-        } else {
-            res.status(404).json({ message: "Trip not found" });
+        if (!trip) {
+            return res.status(404).json({ message: "Trip not found" });
         }
+
+        if (trip.status === "accepted") {
+            const driver = await Driver.findById(trip.driver);
+            const vehicle = await Vehicle.findById(driver.vehicle);
+            let resObj = {
+                tripId: trip._id,
+                origin: trip.origin,
+                destination: trip.destination,
+                fare: trip.fare,
+                status: trip.status,
+                vehicleNumber: vehicle.vehicleNumber,
+                vehicleType: vehicle.vehicleType,
+                firstName: driver.firstName,
+                lastName: driver.lastName,
+                phone: driver.phone,
+            };
+            return res.json(resObj);
+        }
+
+        return res.json(trip);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
