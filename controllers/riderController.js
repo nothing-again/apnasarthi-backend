@@ -35,18 +35,18 @@ export const createRider = async (req, res) => {
             phone,
         });
         newRider.save();
-        // const otp = Math.floor(100000 + Math.random() * 900000);
-        // try {
-        //     const otpResponse = await sendOTP(phone, otp);
-        //     if (otpResponse.status == 200) {
-        //         newRider.otp = otp;
-        //         await newRider.save();
-        //     } else {
-        //         res.status(500).json({ error: otpResponse });
-        //     }
-        // } catch (error) {
-        //     res.status(500).json({ error: error });
-        // }
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        try {
+            const otpResponse = await sendOTP(phone, otp);
+            if (otpResponse.status == 200) {
+                newRider.otp = otp;
+                await newRider.save();
+            } else {
+                res.status(500).json({ error: otpResponse });
+            }
+        } catch (error) {
+            res.status(500).json({ error: error });
+        }
         res.status(201).json(newRider);
     } catch (error) {
         res.status(409).json({ message: error.message });
@@ -83,18 +83,18 @@ export const login = async (req, res) => {
         if (!rider) {
             return res.status(404).json({ message: "Rider not found" });
         }
-        // try {
-        //     const otp = Math.floor(100000 + Math.random() * 900000);
-        //     const otpResponse = await sendOTP(phone, otp);
-        //     if (otpResponse.status == 200) {
-        //         rider.otp = otp;
-        //         await rider.save();
-        //     } else {
-        //         res.status(500).json({ error: otpResponse });
-        //     }
-        // } catch (error) {
-        //     res.status(500).json({ message: error.message });
-        // }
+        try {
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            const otpResponse = await sendOTP(phone, otp);
+            if (otpResponse.status == 200) {
+                rider.otp = otp;
+                await rider.save();
+            } else {
+                res.status(500).json({ error: otpResponse });
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
         res.status(200).json(rider);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -105,11 +105,11 @@ export const verifyOtp = async (req, res) => {
     const { id, otp } = req.body;
     try {
         const rider = await Rider.findById(id);
-        // if (rider.otp == otp) {
-        //     res.status(200).json({ rider });
-        // } else {
-        //     res.status(404).json({ message: "Invalid OTP" });
-        // }
+        if (rider.otp == otp) {
+            res.status(200).json({ rider });
+        } else {
+            res.status(404).json({ message: "Invalid OTP" });
+        }
         res.status(200).json(rider);
     } catch (error) {
         res.status(500).json({ message: error.message });

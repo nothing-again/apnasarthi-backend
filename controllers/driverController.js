@@ -77,18 +77,18 @@ export const loginDriver = async (req, res) => {
             return res.status(404).json({ message: "Driver not found" });
         }
         // console.log("driver", driver);
-        res.status(200).json(driver);
-        // const otp = Math.floor(100000 + Math.random() * 900000);
-        // const otpResponse = await sendOTP(phone, otp);
-        // if (otpResponse.status === 200) {
-        //     driver.otp = otp;
-        //     await driver.save();
-        //     console.log("driver", driver);
-        //     return res.status(200).json(driver);
-        // } else {
-        //     console.log("otpResponse", otpResponse);
-        //     return res.status(500).json({ error: otpResponse });
-        // }
+        // res.status(200).json(driver);
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        const otpResponse = await sendOTP(phone, otp);
+        if (otpResponse.status === 200) {
+            driver.otp = otp;
+            await driver.save();
+            console.log("driver", driver);
+            return res.status(200).json(driver);
+        } else {
+            console.log("otpResponse", otpResponse);
+            return res.status(500).json({ error: otpResponse });
+        }
     } catch (error) {
         console.log("error", error);
         return res.status(500).json({ message: error.message });
@@ -101,11 +101,11 @@ export const verifyOtp = async (req, res) => {
     try {
         const driver = await Driver.findById(id);
         if (!driver) return res.status(404).send(`No driver with id: ${id}`);
-        // if (driver.otp === otp) {
-        //     driver.isVerified = true;
-        //     await driver.save();
-        //     res.status(200).json("message: OTP verified successfully");
-        // }
+        if (driver.otp === otp) {
+            driver.isVerified = true;
+            await driver.save();
+            res.status(200).json("message: OTP verified successfully");
+        }
         res.status(200).json("message: OTP verified successfully");
     } catch (error) {
         console.log(error.message);
