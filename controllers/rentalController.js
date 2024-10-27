@@ -62,10 +62,12 @@ export const confirmRental = async (req, res) => {
         const vehicle = await Vehicle.findById(rental.vehicle);
         const rider = await Rider.findById(rental.rider);
 
-        if (!driver || !vehicle || !rider) {
-            return res
-                .status(404)
-                .json({ message: "Driver, vehicle, or rider not found" });
+        if (!driver) {
+            return res.status(404).json({ message: "Driver not found" });
+        }
+
+        if (!rider) {
+            return res.status(404).json({ message: "Rider not found" });
         }
 
         vehicle.status = "unavailable";
