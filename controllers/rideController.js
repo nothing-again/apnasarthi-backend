@@ -185,8 +185,24 @@ export const confirmTrip = async (req, res) => {
         driver.isAvailable = false;
         await driver.save();
 
+        const vehicleId = driver.vehicle;
+
+        const vehicle = await Vehicle.findById(vehicleId);
+
+        const resObj = {
+            tripId: trip._id,
+            origin: trip.origin,
+            destination: trip.destination,
+            fare: trip.fare,
+            status: trip.status,
+            vehicleNumber: vehicle.vehicleNumber,
+            vehicleType: vehicle.vehicleType,
+            firstName: driver.firstName,
+            lastName: driver.lastName,
+            phone: driver.phone,
+        };
         // send a response containing trip details and driver details
-        res.json({ trip, driver });
+        res.json(resObj);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
