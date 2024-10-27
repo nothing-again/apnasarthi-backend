@@ -1,5 +1,5 @@
 import Package from "../models/packageModel.js";
-
+import Driver from "../models/driverModel.js";
 export const createPackageTrip = async (req, res) => {
     // const { origin, destination, weight } = req.body;
     // pickup point, drop point, weight, vehicle type, date, time
@@ -90,6 +90,39 @@ export const updatePackageTrip = async (req, res) => {
         res.json(updatedPack);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+export const confirmPackageTrip = async (req, res) => {
+    const { packageId, driverId } = req.body;
+    try {
+        let pack = await Package.findById(packageId);
+        if (!pack) {
+            return res.status(404).json({ message: "Package trip not found" });
+        }
+        pack.status = "confirmed";
+        pack.driver = driverId;
+        await pack.save();
+
+        const driver = await Driver.findById(driverId);
+        driver.status = "busy";
+        await driver.save();
+
+        let resObj = {
+            origin: pack.origin,
+            destination: pack.destination,
+            weight: pack.weight,
+            vehicleType: pack.vehicleType,
+            date: pack.date,
+            time: pack.time,
+            status: pack.status,
+            driverName: driver.firstName + " " + driver.lastName,
+            fare: pack.fare,
+        };
+
+        return res.json(resObj);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 };
 
