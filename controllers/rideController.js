@@ -3,6 +3,7 @@ import mongoose, { get } from "mongoose";
 import { getDistance } from "../utils/getDistance.js";
 import Vehicle from "../models/vehicleSchema.js";
 import Driver from "../models/driverModel.js";
+import Rider from "../models/riderModel.js";
 export const getTrips = async (req, res) => {
     try {
         const trips = await Trip.find();
@@ -22,6 +23,7 @@ export const getTripById = async (req, res) => {
         if (trip.status === "accepted") {
             const driver = await Driver.findById(trip.driver);
             const vehicle = await Vehicle.findById(driver.vehicle);
+            const rider = await Rider.findById(trip.rider);
             let resObj = {
                 tripId: trip._id,
                 origin: trip.origin,
@@ -33,6 +35,8 @@ export const getTripById = async (req, res) => {
                 firstName: driver.firstName,
                 lastName: driver.lastName,
                 phone: driver.phone,
+                riderName: rider?.firstName + " " + rider?.lastName,
+                riderPhone: rider?.phone,
             };
             return res.json(resObj);
         }
