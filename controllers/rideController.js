@@ -18,7 +18,21 @@ export const getTripById = async (req, res) => {
         if (trip) {
             if (trip.status === "accepted") {
                 const driver = await Driver.findById(trip.driver);
-                res.json({ trip, driver });
+                const vehicle = await Vehicle.findById(driver.vehicle);
+                let resObj = {
+                    tripId: trip._id,
+                    origin: trip.origin,
+                    destination: trip.destination,
+                    fare: trip.fare,
+                    status: trip.status,
+                    vehicleNumber: vehicle.vehicleNumber,
+                    vehicleType: vehicle.vehicleType,
+                    firstName: driver.firstName,
+                    lastName: driver.lastName,
+                    phone: driver.phone,
+                };
+                return res.json(resObj);
+                }
             }
             res.json(trip);
         } else {
