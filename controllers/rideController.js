@@ -2,6 +2,7 @@ import Trip from "../models/tripSchema.js";
 import mongoose, { get } from "mongoose";
 import { getDistance } from "../utils/getDistance.js";
 import Vehicle from "../models/vehicleSchema.js";
+import Driver from "../models/driverModel.js";
 export const getTrips = async (req, res) => {
     try {
         const trips = await Trip.find();
@@ -15,6 +16,10 @@ export const getTripById = async (req, res) => {
     try {
         const trip = await Trip.findById(req.params.id);
         if (trip) {
+            if (trip.status === "accepted") {
+                const driver = await Driver.findById(trip.driver);
+                res.json({ trip, driver });
+            }
             res.json(trip);
         } else {
             res.status(404).json({ message: "Trip not found" });
@@ -84,7 +89,14 @@ export const createRentalTrip = async (req, res) => {
 export const getEstimatedFare = async (req, res) => {
     const { origin, destination } = req.body;
     // const distance = getDistance(origin, destination);
-    // const availableVehicle = await getAvailableVehicle(origin);
+    const response = await fetch(
+        `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    );
+
+    const data = await response.json();
+    const distance = data.rows[0].elements[0].distance.value / 1000;
+
+    const availableVehicle = await getAvailableVehicle(origin);
     // let fareObj = {};
 
     // for (const vehicle of availableVehicle) {
@@ -128,11 +140,71 @@ export const getEstimatedFare = async (req, res) => {
 
 export const getAvailableVehicle = async (origin) => {
     const vehicles = await Vehicle.find();
-    const availableVehicles = vehicles.filter((vehicle) => {
-        const distance = getDistance(vehicle.location, origin);
+    const availableVehicles = vehicles.filter(async (vehicle) => {
+        // const distance = getDistance(vehicle.location, origin);
+        const response = await fetch(
+            `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${vehicle.location}&destinations=${origin}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+        );
+        const data = await response.json();
+        const distance = data.rows[0].elements[0].distance.value / 1000;
         return distance < 5000 && vehicle.isAvailable;
     });
     return availableVehicles;
+};
+
+export const pendingTrips = async (req, res) => {
+    try {
+        const trips = await Trip.find({ status: "pending" });
+        res.json(trips);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const confirmTrip = async (req, res) => {
+    const { driverId, tripId } = req.body;
+    try {
+        const driver = await Driver.findById({
+            _id: mongoose.Types.ObjectId(driverId),
+        });
+
+        if (!driver) {
+            return res.status(400).json({ message: "Driver is not available" });
+        }
+
+        const trip = await Trip.findById(tripId);
+
+        if (!trip) {
+            return res.status(400).json({ message: "Trip not found" });
+        }
+
+        trip.driver = driverId;
+        trip.status = "accepted";
+        await trip.save();
+
+        driver.isAvailable = false;
+        await driver.save();
+
+        // send a response containing trip details and driver details
+        res.json({ trip, driver });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const cancelTrip = async (req, res) => {
+    const { tripId } = req.body;
+    try {
+        const trip = await Trip.findById(tripId);
+        if (!trip) {
+            return res.status(400).json({ message: "Trip not found" });
+        }
+        trip.status = "cancelled";
+        await trip.save();
+        res.json(trip);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 //TODO: Implement the rental fare calculation logic

@@ -7,6 +7,8 @@ import {
     getTripByRiderId,
     getEstimatedFare,
     createInterCityTrip,
+    confirmTrip,
+    cancelTrip,
 } from "../controllers/rideController.js";
 
 const router = express.Router();
@@ -20,5 +22,7 @@ router.post("/intercity", createInterCityTrip);
 router.get("/:id", getTripById);
 router.get("/rider/:riderId", getTripByRiderId);
 router.get("/driver/:driverId", getTripByDriverId);
+router.post("/confirm", confirmTrip);
+router.post("/cancel", cancelTrip);
 
 export default router;
