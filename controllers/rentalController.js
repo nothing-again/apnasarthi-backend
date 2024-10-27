@@ -1,5 +1,7 @@
 import Rental from "../models/rentalModel.js";
-
+import Driver from "../models/driverModel.js";
+import Vehicle from "../models/vehicleSchema.js";
+import Rider from "../models/riderModel.js";
 export const getRentals = async (req, res) => {
     try {
         const rentals = await Rental.find();
@@ -47,6 +49,53 @@ export const createRental = async (req, res) => {
     }
 };
 
+export const confirmRental = async (req, res) => {
+    const { rentalId, driverId, fare } = req.body;
+    try {
+        const rental = await Rental.findById(rentalId);
+        if (!rental) {
+            return res.status(404).json({ message: "Rental not found" });
+        }
+        rental.status = "confirmed";
+
+        const driver = await Driver.findById(driverId);
+        const vehicle = await Vehicle.findById(rental.vehicle);
+        const rider = await Rider.findById(rental.rider);
+
+        if (!driver || !vehicle || !rider) {
+            return res
+                .status(404)
+                .json({ message: "Driver, vehicle, or rider not found" });
+        }
+
+        vehicle.status = "unavailable";
+        rental.driver = driverId;
+        rental.fare = fare;
+        await rental.save();
+        let resObj = {
+            rentalId: rental?._id,
+            origin: rental?.pickupPoint,
+            destination: rider?.address,
+            startDate: rental?.startDate,
+            endDate: rental?.endDate,
+            vehicleType: rental?.vehicleType,
+            fare: rental?.fare,
+            driver: driver?.firstName + " " + driver?.lastName,
+            driverPhone: driver?.phone,
+            driverEmail: driver?.email,
+            vehicleModel: vehicle?.carModel,
+            vehicleYear: vehicle?.carYear,
+            vehicleRegistrationNumber: vehicle?.registrationNumber,
+            rider: rider?.firstName + " " + rider?.lastName,
+            riderPhone: rider?.phone,
+            riderEmail: rider?.email,
+        };
+        res.json(resObj);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const deleteRental = async (req, res) => {
     const { id } = req.params;
     try {
@@ -58,9 +107,31 @@ export const deleteRental = async (req, res) => {
 };
 
 export const getPendingRentals = async (req, res) => {
+    const { driverId } = req.body;
     try {
         const rentals = await Rental.find({ status: "pending" });
-        res.json(rentals);
+        if (!driverId) {
+            return res.status(400).json({ message: "Please provide driverId" });
+        }
+
+        const driver = await Driver.findById(driverId);
+        if (!driver) {
+            return res.status(404).json({ message: "Driver not found" });
+        }
+
+        const farePerDay = Number(driver.farePerDay || 1000);
+
+        rentals.map(async (rental) => {
+            const startDate = new Date(rental.startDate);
+            const endDate = new Date(rental.endDate);
+            const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+            const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            rental.fare = diffDays * farePerDay;
+            await rental.save();
+        });
+
+        const updatedRentals = await Rental.find({ status: "pending" });
+        res.json(updatedRentals);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -95,7 +166,7 @@ export const getRentalPrice = async (req, res) => {
                 .status(404)
                 .json({ message: "Rental or driver not found" });
         }
-        const farePerDay = Number(driver.farePerDay);
+        const farePerDay = Number(driver.farePerDay || 1000);
         let totalFare = 0;
         const startDate = new Date(rental.startDate);
         const endDate = new Date(rental.endDate);
