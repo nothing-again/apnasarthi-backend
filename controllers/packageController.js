@@ -173,9 +173,12 @@ export const getPackageTripByDriverId = async (req, res) => {
 export const getPackageTripByRiderId = async (req, res) => {
     try {
         const pack = await Package.find({ rider: req.params.id });
-        // sort by date
+        // sort by date and time
         pack.sort((a, b) => {
-            return new Date(b.date) - new Date(a.date);
+            return (
+                new Date(a.date + " " + a.time) -
+                new Date(b.date + " " + b.time)
+            );
         });
         res.json(pack);
     } catch (error) {
