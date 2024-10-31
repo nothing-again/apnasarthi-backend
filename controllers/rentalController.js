@@ -250,31 +250,53 @@ export const estimateRental = async (req, res) => {
                 .json({ message: "Please provide all required fields" });
         }
 
-        let price = 0;
-        let availableVehicles = await Vehicle.find({
-            vehicleType,
-            status: "available",
-        });
-        const timeDiff = Math.abs(new Date(endDate) - new Date(startDate));
-        const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        let resObj = {};
+        // let price = 0;
+        // let availableVehicles = await Vehicle.find({
+        //     vehicleType,
+        //     status: "available",
+        // });
+        // const timeDiff = Math.abs(new Date(endDate) - new Date(startDate));
+        // const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        // let resObj = {};
 
-        for (let i = 0; i < availableVehicles.length; i++) {
-            const vehicle = availableVehicles[i];
-            const driver = await Driver.findById(vehicle.driver);
-            price = diffDays * Number(driver.farePerDay);
-            resObj = {
-                vehicleId: vehicle._id,
-                vehicleModel: vehicle.carModel,
-                vehicleYear: vehicle.carYear,
-                vehicleRegistrationNumber: vehicle.registrationNumber,
-                driverName: driver.firstName + " " + driver.lastName,
-                driverPhone: driver.phone,
-                driverEmail: driver.email,
-                fare: price,
-            };
-            res.send(resObj);
-        }
+        // for (let i = 0; i < availableVehicles.length; i++) {
+        //     const vehicle = availableVehicles[i];
+        //     const driver = await Driver.findById(vehicle.driver);
+        //     price = diffDays * Number(driver.farePerDay);
+        //     resObj = {
+        //         vehicleId: vehicle._id,
+        //         vehicleModel: vehicle.carModel,
+        //         vehicleYear: vehicle.carYear,
+        //         vehicleRegistrationNumber: vehicle.registrationNumber,
+        //         driverName: driver.firstName + " " + driver.lastName,
+        //         driverPhone: driver.phone,
+        //         driverEmail: driver.email,
+        //         fare: price,
+        //     };
+
+        let resObj = [
+            {
+                vehicleId: "1",
+                vehicleModel: "Toyota Camry",
+                vehicleYear: "2019",
+                vehicleRegistrationNumber: "ABC123",
+                driverName: "John Doe",
+                driverPhone: "08012345678",
+                driverEmail: "johndoe@gmail.com",
+                fare: 5000,
+            },
+            {
+                vehicleId: "2",
+                vehicleModel: "Toyota Corolla",
+                vehicleYear: "2018",
+                vehicleRegistrationNumber: "DEF456",
+                driverName: "Jane Doe",
+                driverPhone: "08012345678",
+                driverEmail: "janedoe@gmail.com",
+                fare: 6000,
+            },
+        ];
+        res.send(resObj);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
