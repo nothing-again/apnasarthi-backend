@@ -49,6 +49,8 @@ const calculateFare = (weight, distance, vehicleType) => {
         fare = baseFare + distance * 0.75;
     } else if (vehicleType === "mini-truck") {
         fare = baseFare + distance * 1;
+    } else {
+        fare = baseFare + distance * 1.5;
     }
     return fare;
 };
@@ -172,6 +174,49 @@ export const getPackageTripByRiderId = async (req, res) => {
     try {
         const pack = await Package.find({ rider: req.params.id });
         res.json(pack);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const estimatePackage = async (req, res) => {
+    const { origin, destination, weight, vehicleType, date, time } = req.body;
+    if (!origin || !destination || !weight || !vehicleType || !date || !time) {
+        return res
+            .status(400)
+            .json({ message: "Please provide all required fields" });
+    }
+
+    let distance = 0;
+    try {
+        distance = await fetch(
+            `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                return data.rows[0].elements[0].distance.value;
+            });
+    } catch (error) {
+        return res
+            .status(400)
+            .json({ message: `${origin} to ${destination} are not available` });
+    }
+
+    try {
+        distance = distance / 1000; // convert to km
+        const fare = calculateFare(weight, distance, vehicleType);
+
+        let resObj = {
+            origin,
+            destination,
+            weight,
+            vehicleType,
+            date,
+            time,
+            fare,
+            distance,
+        };
+        res.json(resObj);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
