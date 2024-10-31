@@ -106,14 +106,12 @@ export const createRentalTrip = async (req, res) => {
 
 export const getEstimatedFare = async (req, res) => {
     const { origin, destination } = req.body;
-    // const distance = getDistance(origin, destination);
     const response = await fetch(
         `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${process.env.GOOGLE_MAPS_API_KEY}`
     );
 
     const data = await response.json();
-    // const distance = data.rows[0].elements[0].distance.value / 1000;
-
+    const distance = data.rows[0].elements[0].distance.value / 1000;
     // const availableVehicle = await getAvailableVehicle(origin);
     // let fareObj = {};
 
@@ -142,15 +140,15 @@ export const getEstimatedFare = async (req, res) => {
     let fareObj = [
         {
             vehicleType: "auto",
-            fare: 1,
+            fare: distance * 17.5,
         },
         {
             vehicleType: "bike",
-            fare: 5,
+            fare: distance * 10,
         },
         {
             vehicleType: "mini-truck",
-            fare: 15,
+            fare: distance * 25,
         },
     ];
     res.json(fareObj);
