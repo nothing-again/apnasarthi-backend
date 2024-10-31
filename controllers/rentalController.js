@@ -240,3 +240,42 @@ export const updateRental = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const estimateRental = async (req, res) => {
+    try {
+        const { pickupPoint, startDate, endDate, vehicleType } = req.body;
+        if (!pickupPoint || !startDate || !endDate || !vehicleType) {
+            return res
+                .status(400)
+                .json({ message: "Please provide all required fields" });
+        }
+
+        let price = 0;
+        let availableVehicles = await Vehicle.find({
+            vehicleType,
+            status: "available",
+        });
+        const timeDiff = Math.abs(new Date(endDate) - new Date(startDate));
+        const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        let resObj = {};
+
+        for (let i = 0; i < availableVehicles.length; i++) {
+            const vehicle = availableVehicles[i];
+            const driver = await Driver.findById(vehicle.driver);
+            price = diffDays * Number(driver.farePerDay);
+            resObj = {
+                vehicleId: vehicle._id,
+                vehicleModel: vehicle.carModel,
+                vehicleYear: vehicle.carYear,
+                vehicleRegistrationNumber: vehicle.registrationNumber,
+                driverName: driver.firstName + " " + driver.lastName,
+                driverPhone: driver.phone,
+                driverEmail: driver.email,
+                fare: price,
+            };
+            res.send(resObj);
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

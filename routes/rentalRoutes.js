@@ -10,12 +10,14 @@ import {
     getRentalByRider,
     getRentalPrice,
     confirmRental,
+    estimateRental,
 } from "../controllers/rentalController.js";
 
 const router = express.Router();
 
 router.get("/", getRentals);
 router.post("/", createRental);
+router.post("/estimate", estimateRental);
 router.post("/pending", getPendingRentals);
 router.post("/confirm", confirmRental);
 router.get("/:id", getRentalById);
