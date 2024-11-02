@@ -37,6 +37,7 @@ const IntercitySchema = new Schema({
     status: {
         type: String,
         default: "pending",
+        enum: ["scheduled", "ongoing", "completed"],
     },
     rider: {
         type: Schema.Types.ObjectId,

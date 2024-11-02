@@ -9,6 +9,7 @@ import documentRotes from "./routes/documentRoutes.js";
 import packageRoutes from "./routes/packageRoutes.js";
 import rentalRoutes from "./routes/rentalRoutes.js";
 import intercityRouts from "./routes/intercityRoutes.js";
+import poolingRoutes from "./routes/poolingRoutes.js";
 import multer from "multer";
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
@@ -62,5 +63,6 @@ app.use("/api/documents", documentRotes);
 app.use("/api/packages", packageRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/intercity", intercityRouts);
+app.use("/api/pooling", poolingRoutes);
 
 export default app;
