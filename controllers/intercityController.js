@@ -28,7 +28,22 @@ export const getIntercityByRiderId = async (req, res) => {
 export const getIntercityById = async (req, res) => {
     try {
         const intercity = await Intercity.findById(req.params.id);
-        res.json(intercity);
+        let driver = await Driver.findById(intercity.driver);
+        let rider = await Rider.findById(intercity.rider);
+
+        let resObj = {
+            id: intercity._id,
+            origin: intercity.origin,
+            destination: intercity.destination,
+            time: intercity.arrivalTime,
+            fare: intercity.fare,
+            date: intercity.date,
+            driverName: driver.firstName + " " + driver.lastName,
+            driverPhone: driver.phone,
+            riderName: rider.firstName + " " + rider.lastName,
+            riderPhone: rider.phone,
+        };
+        res.json(resObj);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
