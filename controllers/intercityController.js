@@ -13,10 +13,13 @@ import Vehicle from "../models/vehicleSchema.js";
 
 export const getIntercityByRiderId = async (req, res) => {
   try {
-    const intercity = await Intercity.find({ rider: req.params.riderId });
+    const intercity = await Intercity.find({ rider: req.params.riderId }).sort({
+      date: -1,
+      arrivalTime: -1,
+    });
     res.json(intercity);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -25,14 +28,34 @@ export const getIntercityById = async (req, res) => {
     const intercity = await Intercity.findById(req.params.id);
     res.json(intercity);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 
 export const createIntercity = async (req, res) => {
-  const { origin, destination, noOfPeople, date, time, rider, fare, distance } =
-    req.body;
+  const {
+    origin,
+    destination,
+    noOfPeople,
+    date,
+    time,
+    rider,
+    fare,
+    rideShare,
+  } = req.body;
+  if (
+    !origin ||
+    !destination ||
+    !noOfPeople ||
+    !date ||
+    !time ||
+    !rider ||
+    !fare
+  ) {
+    return res.status(400).json({ message: "Please fill all the fields" });
+  }
   try {
+    const distance = 10;
     const intercity = new Intercity({
       origin,
       destination,
@@ -112,16 +135,12 @@ export const getEstimatedFare = async (req, res) => {
     //    }
     let fareObj = [
       {
-        vehicleType: "auto",
-        fare: distance * 17.5,
+        vehicleType: "Mini(Swift, WagonR)",
+        fare: distance * 19.5,
       },
       {
-        vehicleType: "bike",
-        fare: distance * 10,
-      },
-      {
-        vehicleType: "mini-truck",
-        fare: distance * 25,
+        vehicleType: "SUV(Scorpio, Belero)",
+        fare: distance * 30,
       },
     ];
     res.json(fareObj);
