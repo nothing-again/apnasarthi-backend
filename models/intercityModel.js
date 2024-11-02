@@ -46,7 +46,7 @@ const IntercitySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Driver",
     },
-    rideSharing: {
+    rideShare: {
         type: Boolean,
         default: false,
     },
