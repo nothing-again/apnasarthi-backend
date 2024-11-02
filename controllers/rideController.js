@@ -5,239 +5,239 @@ import Vehicle from "../models/vehicleSchema.js";
 import Driver from "../models/driverModel.js";
 import Rider from "../models/riderModel.js";
 export const getTrips = async (req, res) => {
-    try {
-        const trips = await Trip.find();
-        res.json(trips);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  try {
+    const trips = await Trip.find();
+    res.json(trips);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const getTripById = async (req, res) => {
-    try {
-        const trip = await Trip.findById(req.params.id);
-        if (!trip) {
-            return res.status(404).json({ message: "Trip not found" });
-        }
-
-        if (trip.status === "accepted") {
-            const driver = await Driver.findById(trip.driver);
-            const vehicle = await Vehicle.findById(driver.vehicle);
-            const rider = await Rider.findById(trip.rider);
-            let resObj = {
-                tripId: trip._id,
-                origin: trip.origin,
-                destination: trip.destination,
-                fare: trip.fare,
-                status: trip.status,
-                vehicleNumber: vehicle?.vehicleNumber,
-                vehicleType: vehicle?.vehicleType,
-                firstName: driver.firstName,
-                lastName: driver.lastName,
-                phone: driver.phone,
-                riderName: rider?.firstName + " " + rider?.lastName,
-                riderPhone: rider?.phone,
-            };
-            return res.json(resObj);
-        }
-
-        return res.json(trip);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
+  try {
+    const trip = await Trip.findById(req.params.id);
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
     }
+
+    if (trip.status === "accepted") {
+      const driver = await Driver.findById(trip.driver);
+      const vehicle = await Vehicle.findById(driver.vehicle);
+      const rider = await Rider.findById(trip.rider);
+      let resObj = {
+        tripId: trip._id,
+        origin: trip.origin,
+        destination: trip.destination,
+        fare: trip.fare,
+        status: trip.status,
+        vehicleNumber: vehicle?.vehicleNumber,
+        vehicleType: vehicle?.vehicleType,
+        firstName: driver.firstName,
+        lastName: driver.lastName,
+        phone: driver.phone,
+        riderName: rider?.firstName + " " + rider?.lastName,
+        riderPhone: rider?.phone,
+      };
+      return res.json(resObj);
+    }
+
+    return res.json(trip);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
 
 export const getTripByRiderId = async (req, res) => {
-    try {
-        const trips = await Trip.find({ rider: req.params.riderId });
-        res.json(trips);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  try {
+    const trips = await Trip.find({ rider: req.params.riderId });
+    res.json(trips);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const getTripByDriverId = async (req, res) => {
-    try {
-        const trips = await Trip.find({ driver: req.params.driverId });
-        res.json(trips);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  try {
+    const trips = await Trip.find({ driver: req.params.driverId });
+    res.json(trips);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const createTrip = async (req, res) => {
-    const { riderId, origin, destination, fare, paymentStatus } = req.body;
+  const { riderId, origin, destination, fare, paymentStatus } = req.body;
 
-    if (!riderId || !origin || !destination || !fare || !paymentStatus) {
-        return res
-            .status(400)
-            .json({ message: "Please provide all required fields" });
-    }
+  if (!riderId || !origin || !destination || !fare || !paymentStatus) {
+    return res
+      .status(400)
+      .json({ message: "Please provide all required fields" });
+  }
 
-    console.log("riderId", riderId);
-    console.log("origin", origin);
-    console.log("destination", destination);
-    console.log("fare", fare);
-    console.log("paymentStatus", paymentStatus);
+  console.log("riderId", riderId);
+  console.log("origin", origin);
+  console.log("destination", destination);
+  console.log("fare", fare);
+  console.log("paymentStatus", paymentStatus);
 
-    const newTrip = new Trip({
-        rider: riderId,
-        origin,
-        destination,
-        fare,
-        paymentStatus,
-    });
+  const newTrip = new Trip({
+    rider: riderId,
+    origin,
+    destination,
+    fare,
+    paymentStatus,
+  });
 
-    try {
-        await newTrip.save();
-        res.status(201).json(newTrip);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
+  try {
+    await newTrip.save();
+    res.status(201).json(newTrip);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 export const createInterCityTrip = async (req, res) => {
-    res.json({ message: "InterCity Trip Created" });
+  res.json({ message: "InterCity Trip Created" });
 };
 
 export const createRentalTrip = async (req, res) => {
-    res.json({ message: "Rental Trip Created" });
+  res.json({ message: "Rental Trip Created" });
 };
 
 export const getEstimatedFare = async (req, res) => {
-    const { origin, destination } = req.body;
-    const response = await fetch(
-        `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${process.env.GOOGLE_MAPS_API_KEY}`
-    );
+  const { origin, destination } = req.body;
+  const response = await fetch(
+    `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+  );
 
-    const data = await response.json();
-    const distance = data.rows[0].elements[0].distance.value / 1000;
-    // const availableVehicle = await getAvailableVehicle(origin);
-    // let fareObj = {};
+  const data = await response.json();
+  const distance = data.rows[0].elements[0].distance.value / 1000;
+  // const availableVehicle = await getAvailableVehicle(origin);
+  // let fareObj = {};
 
-    // for (const vehicle of availableVehicle) {
-    //     if (vehicle.type == "auto") {
-    //         const time = new Date().getHours();
-    //         // check if time is between 5 am and 9:30 pm then fare is 17.5/km
-    //         //if time is between 9:31 pm and 11 pm or 3:45 am and 4:59 am then fare is 26/km
-    //         //else fare is 22/km
-    //         let fare = 0;
-    //         if (time >= 5 && time <= 21.5) {
-    //             fare = 17.5 * distance;
-    //         } else if (
-    //             (time >= 21.5 && time <= 23) ||
-    //             (time >= 3.75 && time <= 4.98)
-    //         ) {
-    //             fare = 26 * distance;
-    //         } else {
-    //             fare = 33 * distance;
-    //         }
+  // for (const vehicle of availableVehicle) {
+  //     if (vehicle.type == "auto") {
+  //         const time = new Date().getHours();
+  //         // check if time is between 5 am and 9:30 pm then fare is 17.5/km
+  //         //if time is between 9:31 pm and 11 pm or 3:45 am and 4:59 am then fare is 26/km
+  //         //else fare is 22/km
+  //         let fare = 0;
+  //         if (time >= 5 && time <= 21.5) {
+  //             fare = 17.5 * distance;
+  //         } else if (
+  //             (time >= 21.5 && time <= 23) ||
+  //             (time >= 3.75 && time <= 4.98)
+  //         ) {
+  //             fare = 26 * distance;
+  //         } else {
+  //             fare = 33 * distance;
+  //         }
 
-    //         fareObj[vehicle.type] = fare;
-    //     }
-    // }
-    //Mock response
-    let fareObj = [
-        {
-            vehicleType: "auto",
-            fare: distance * 17.5,
-        },
-        {
-            vehicleType: "bike",
-            fare: distance * 10,
-        },
-        {
-            vehicleType: "car",
-            fare: distance * 25,
-        },
-    ];
-    res.json(fareObj);
+  //         fareObj[vehicle.type] = fare;
+  //     }
+  // }
+  //Mock response
+  let fareObj = [
+    {
+      vehicleType: "auto",
+      fare: distance * 17.5,
+    },
+    {
+      vehicleType: "bike",
+      fare: distance * 10,
+    },
+    {
+      vehicleType: "car",
+      fare: distance * 25,
+    },
+  ];
+  res.json(fareObj);
 };
 
 export const getAvailableVehicle = async (origin) => {
-    const vehicles = await Vehicle.find();
-    const availableVehicles = vehicles.filter(async (vehicle) => {
-        // const distance = getDistance(vehicle.location, origin);
-        const response = await fetch(
-            `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${vehicle.location}&destinations=${origin}&key=${process.env.GOOGLE_MAPS_API_KEY}`
-        );
-        const data = await response.json();
-        const distance = data.rows[0].elements[0].distance.value / 1000;
-        return distance < 5000 && vehicle.isAvailable;
-    });
-    return availableVehicles;
+  const vehicles = await Vehicle.find();
+  const availableVehicles = vehicles.filter(async (vehicle) => {
+    // const distance = getDistance(vehicle.location, origin);
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${vehicle.location}&destinations=${origin}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    );
+    const data = await response.json();
+    const distance = data.rows[0].elements[0].distance.value / 1000;
+    return distance < 5000 && vehicle.isAvailable;
+  });
+  return availableVehicles;
 };
 
 export const pendingTrips = async (_, res) => {
-    try {
-        const trips = await Trip.find();
-        const pendingTrips = trips.filter((trip) => trip.status === "pending");
-        res.json(pendingTrips);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  try {
+    const trips = await Trip.find();
+    const pendingTrips = trips.filter((trip) => trip.status === "pending");
+    res.json(pendingTrips);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const confirmTrip = async (req, res) => {
-    const { driverId, tripId } = req.body;
-    console.log("driverId", driverId);
-    console.log("tripId", tripId);
-    try {
-        const driver = await Driver.findById({ _id: driverId });
+  const { driverId, tripId } = req.body;
+  console.log("driverId", driverId);
+  console.log("tripId", tripId);
+  try {
+    const driver = await Driver.findById({ _id: driverId });
 
-        if (!driver) {
-            return res.status(400).json({ message: "Driver is not available" });
-        }
-
-        const trip = await Trip.findById({ _id: tripId });
-
-        if (!trip) {
-            return res.status(400).json({ message: "Trip not found" });
-        }
-
-        trip.driver = driverId;
-        trip.status = "accepted";
-        await trip.save();
-
-        driver.isAvailable = false;
-        await driver.save();
-
-        const vehicleId = driver.vehicle;
-
-        const vehicle = await Vehicle.findById(vehicleId);
-
-        const resObj = {
-            tripId: trip._id,
-            origin: trip.origin,
-            destination: trip.destination,
-            fare: trip.fare,
-            status: trip.status,
-            vehicleNumber: vehicle?.vehicleNumber,
-            vehicleType: vehicle?.vehicleType,
-            firstName: driver.firstName,
-            lastName: driver.lastName,
-            phone: driver.phone,
-        };
-        // send a response containing trip details and driver details
-        res.json(resObj);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    if (!driver) {
+      return res.status(400).json({ message: "Driver is not available" });
     }
+
+    const trip = await Trip.findById({ _id: tripId });
+
+    if (!trip) {
+      return res.status(400).json({ message: "Trip not found" });
+    }
+
+    trip.driver = driverId;
+    trip.status = "accepted";
+    await trip.save();
+
+    driver.isAvailable = false;
+    await driver.save();
+
+    const vehicleId = driver.vehicle;
+
+    const vehicle = await Vehicle.findById(vehicleId);
+
+    const resObj = {
+      tripId: trip._id,
+      origin: trip.origin,
+      destination: trip.destination,
+      fare: trip.fare,
+      status: trip.status,
+      vehicleNumber: vehicle?.vehicleNumber,
+      vehicleType: vehicle?.vehicleType,
+      firstName: driver.firstName,
+      lastName: driver.lastName,
+      phone: driver.phone,
+    };
+    // send a response containing trip details and driver details
+    res.json(resObj);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const cancelTrip = async (req, res) => {
-    const { tripId } = req.body;
-    try {
-        const trip = await Trip.findById(tripId);
-        if (!trip) {
-            return res.status(400).json({ message: "Trip not found" });
-        }
-        trip.status = "cancelled";
-        await trip.save();
-        res.json(trip);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+  const { tripId } = req.body;
+  try {
+    const trip = await Trip.findById(tripId);
+    if (!trip) {
+      return res.status(400).json({ message: "Trip not found" });
     }
+    trip.status = "cancelled";
+    await trip.save();
+    res.json(trip);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 //TODO: Implement the rental fare calculation logic
