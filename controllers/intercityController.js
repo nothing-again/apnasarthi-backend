@@ -1,5 +1,6 @@
 import Driver from "../models/driverModel.js";
 import Intercity from "../models/intercityModel.js";
+import Rider from "../models/riderModel.js";
 import Vehicle from "../models/vehicleSchema.js";
 
 // getIntercityByRiderId,
