@@ -147,7 +147,7 @@ export const getEstimatedFare = async (req, res) => {
             fare: distance * 10,
         },
         {
-            vehicleType: "mini-truck",
+            vehicleType: "car",
             fare: distance * 25,
         },
     ];
