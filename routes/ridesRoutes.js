@@ -22,9 +22,9 @@ router.post("/estimate", getEstimatedFare);
 
 router.post("/intercity", createInterCityTrip);
 
-router.get("/:id", getTripById);
 router.get("/rider/:riderId", getTripByRiderId);
 router.get("/driver/:driverId", getTripByDriverId);
+router.get("/:id", getTripById);
 router.post("/cancel", cancelTrip);
 
 export default router;

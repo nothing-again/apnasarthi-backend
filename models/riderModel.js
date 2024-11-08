@@ -21,6 +21,13 @@ const riderSchema = new mongoose.Schema(
         otp: {
             type: Number,
         },
+        location: {
+            type: {
+                latitude: Number,
+                longitude: Number,
+            },
+            default: null,
+        },
         paymentMethod: {
             type: String,
             enum: ["card", "paypal", "googlepay", "applepay"],

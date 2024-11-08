@@ -36,12 +36,10 @@ const driverSchema = new mongoose.Schema(
         },
         location: {
             type: {
-                type: String,
-                enum: ["Point"],
+                latitude: Number,
+                longitude: Number,
             },
-            coordinates: {
-                type: [Number],
-            },
+            default: null,
         },
         farePerKm: {
             type: Number,
