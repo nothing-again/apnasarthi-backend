@@ -1,15 +1,15 @@
 import express from "express";
 import {
-    createTrip,
-    getTripById,
-    getTrips,
-    getTripByDriverId,
-    getTripByRiderId,
-    getEstimatedFare,
-    createInterCityTrip,
-    confirmTrip,
-    cancelTrip,
-    pendingTrips,
+  createTrip,
+  getTripById,
+  getTrips,
+  getTripByDriverId,
+  getTripsByRiderId,
+  getEstimatedFare,
+  createInterCityTrip,
+  confirmTrip,
+  cancelTrip,
+  pendingTrips,
 } from "../controllers/rideController.js";
 
 const router = express.Router();
@@ -22,7 +22,7 @@ router.post("/estimate", getEstimatedFare);
 
 router.post("/intercity", createInterCityTrip);
 
-router.get("/rider/:riderId", getTripByRiderId);
+router.get("/rider/:riderId", getTripsByRiderId);
 router.get("/driver/:driverId", getTripByDriverId);
 router.get("/:id", getTripById);
 router.post("/cancel", cancelTrip);

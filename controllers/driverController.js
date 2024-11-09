@@ -1,4 +1,5 @@
 import Driver from "../models/driverModel.js";
+import Package from "../models/packageModel.js";
 import Trip from "../models/tripSchema.js";
 import { sendOTP } from "../services/otpService.js";
 import mongoose from "mongoose";
@@ -198,6 +199,34 @@ export const getDriverLocation = async (req, res) => {
     const driver = await Driver.findById(trip.driver);
     if (!driver) return res.status(404).json({ message: "Driver not found" });
     res.status(200).json(driver.location);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const progressTrip = async (req, res) => {
+  const { tripId } = req.body;
+  try {
+    const trip = await Trip.findById(tripId);
+    if (!trip) return res.status(404).json({ message: "Trip not found" });
+    trip.status = "in_progress";
+    trip.startedAt = new Date();
+    await trip.save();
+    res.status(200).json(trip);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const progressPackageTrip = async (req, res) => {
+  const { packageId } = req.body;
+  try {
+    const trip = await Package.findById(packageId);
+    if (!trip) return res.status(404).json({ message: "Package not found" });
+    trip.status = "in_progress";
+    trip.startedAt = new Date();
+    await trip.save();
+    res.status(200).json(trip);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

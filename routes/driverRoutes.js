@@ -1,18 +1,20 @@
 import express from "express";
 import {
-    getDrivers,
-    getDriverById,
-    createDriver,
-    updateDriver,
-    deleteDriver,
-    loginDriver,
-    verifyOtp,
-    updateAvailability,
-    updateLocation,
-    updateFarePerDay,
-    updateFarePerKm,
-    updateDriverLocation,
-    getDriverLocation,
+  getDrivers,
+  getDriverById,
+  createDriver,
+  updateDriver,
+  deleteDriver,
+  loginDriver,
+  verifyOtp,
+  updateAvailability,
+  updateLocation,
+  updateFarePerDay,
+  updateFarePerKm,
+  updateDriverLocation,
+  getDriverLocation,
+  progressTrip,
+  progressPackageTrip,
 } from "../controllers/driverController.js";
 
 const router = express.Router();
@@ -27,5 +29,7 @@ router.route("/updateAvailability/:id").put(updateAvailability);
 router.route("/updateFarePerKm/:id").put(updateFarePerKm);
 router.route("/updateFarePerDay/:id").put(updateFarePerDay);
 router.route("/:id").get(getDriverById).put(updateDriver).delete(deleteDriver);
+router.route("/progressTrip").post(progressTrip);
+router.route("/progressPackageTrip").post(progressPackageTrip);
 
 export default router;
